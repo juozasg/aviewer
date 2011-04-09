@@ -4,6 +4,9 @@ import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
 import Engine.Bindings
+import Game.Data
+
+as1 = [[(0.01,0.01),(0.2,0.01),(0.2,0.2)],[(0.5,0.5),(0.8,0.5),(1.59,0.99),(0.99,0.99)]] :: Asteroids
 
 main = do
   (progname, _) <- getArgsAndInitialize
@@ -12,15 +15,13 @@ main = do
   createWindow "Hello World"
   windowSize $= Size 480 300
 
-  angle <- newIORef (0.0::GLfloat)
-  delta <- newIORef (0.1::GLfloat)
-  position <- newIORef (0.8::GLfloat, 0.5)
-  isFullScreen <- newIORef False
+  asteroidsRef <- newIORef as1
+  isFullScreenRef <- newIORef False
 
-  keyboardMouseCallback $= Just (keyboardMouse isFullScreen delta position)
+  keyboardMouseCallback $= Just (keyboardMouse isFullScreenRef)
   reshapeCallback $= Just reshape
-  idleCallback $= Just (idle angle delta)
-  displayCallback $= (display angle position)
+  idleCallback $= Just (idle asteroidsRef)
+  displayCallback $= (display asteroidsRef)
 
   clearColor $= Color4 0.8 0.8 0.8 0.8
   pointSize $= 10.0

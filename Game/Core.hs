@@ -1,11 +1,21 @@
-module Game.Core (displayAsteroids) where
+module Game.Core (displayAsteroids,updateAsteroids) where
 
-import Graphics.Rendering.OpenGL
+import Data.IORef
+
 import Graphics.UI.GLUT
 
 import Game.Data
+import Game.Render
+import Game.Update
 
-displayAsteroids = do
-  renderPrimitive Points $ do
-    color $ Color3 (0::GLfloat) 0 0
-    vertex $ Vertex3 (0.8::GLfloat) 0.5 0
+displayAsteroids asteroidsRef = do
+  asteroids <- get asteroidsRef
+  mapM_ renderAsteroid asteroids
+
+  -- renderPrimitive Points $ do
+  --   color $ Color3 (0::GLfloat) 0 0
+  --   vertex $ Vertex2 (0.8::GLfloat) 0.5
+
+
+
+
