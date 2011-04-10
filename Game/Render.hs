@@ -11,10 +11,9 @@ renderAsteroid asteroid = do
 
 
 asteroidPrimitive :: Asteroid -> IO ()
-asteroidPrimitive = mapM_ asteroidPoint
+asteroidPrimitive = mapM_ (\(x,y) -> do
+  color $ Color3 (1.0::GLfloat) 1.0 1.0
+  vertex $ Vertex2 x y)
 
 
-asteroidPoint :: (Float,Float) -> IO ()
-asteroidPoint (x,y) = do
-  color $ Color3 (0::GLfloat) 0 0
-  vertex $ Vertex2 x (y::GLfloat)
+
