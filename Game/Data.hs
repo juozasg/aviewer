@@ -5,3 +5,6 @@ import Graphics.UI.GLUT
 
 type Asteroid = [(Float,Float)]
 type Asteroids = [Asteroid]
+
+
+noAsteroids = [[]]

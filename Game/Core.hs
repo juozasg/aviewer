@@ -8,7 +8,7 @@ import Game.Data
 import Game.Render
 import Game.Update
 
-displayAsteroids asteroidsRef = mapM_ renderAsteroid =<< get asteroidsRef
+displayAsteroids roidsRef = get roidsRef >>= mapM_ renderAsteroid
 
 
   -- renderPrimitive Points $ do
