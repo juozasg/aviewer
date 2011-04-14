@@ -8,9 +8,8 @@ import Game.Data
 import Game.Render
 import Game.Update
 
-displayAsteroids asteroidsRef = do
-  asteroids <- get asteroidsRef
-  mapM_ renderAsteroid asteroids
+displayAsteroids asteroidsRef = mapM_ renderAsteroid =<< get asteroidsRef
+
 
   -- renderPrimitive Points $ do
   --   color $ Color3 (0::GLfloat) 0 0
