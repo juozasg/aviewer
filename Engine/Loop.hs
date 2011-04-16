@@ -12,8 +12,8 @@ display asteroidsRef = do
   swapBuffers
 
 
-idle asteroidsRef = do
-  updateAsteroids asteroidsRef
+idle asteroidsRef ioBufRef = do
+  updateAsteroids asteroidsRef ioBufRef
   -- a <- get angle
   -- d <- get delta
   -- angle $=! (a + d)

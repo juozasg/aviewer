@@ -26,11 +26,13 @@ main = do
   setLineSmooth
 
   asteroidsRef <- newIORef as1
+  ioBufRef <- newIORef ""
+
   isFullScreenRef <- newIORef False
 
   keyboardMouseCallback $= Just (keyboardMouse isFullScreenRef)
   reshapeCallback $= Just reshape
-  idleCallback $= Just (idle asteroidsRef)
+  idleCallback $= Just (idle asteroidsRef ioBufRef)
   displayCallback $= (display asteroidsRef)
 
   clearColor $= Color4 0.1 0.1 0.1 1.0
