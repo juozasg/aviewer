@@ -7,4 +7,4 @@ type Asteroid = [(Float,Float)]
 type Asteroids = [Asteroid]
 
 
-noAsteroids = [[]]
+noAsteroids = []

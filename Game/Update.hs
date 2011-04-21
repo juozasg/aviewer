@@ -11,21 +11,35 @@ import Game.Data
 import Data.List
 
 updateAsteroids asteroidsRef ioBufRef = do
-  newContents <- nbGetContents
   previousContents <- get ioBufRef
-  let contents = previousContents ++ newContents
-  let usableContents = dropDiscardedLines contents
-  
-  unless (contents == []) $ putStrLn contents
+  newContents <- nbGetContents
+  let allContents = previousContents ++ newContents
+  let (newAsteroids, remainingContent, clear) = parseAsteroidsInput allContents
 
+  previousAsteroids <- if clear then return noAsteroids else get asteroidsRef
+  asteroidsRef $= (previousAsteroids ++ newAsteroids)
+  ioBufRef $= remainingContent
 
-dropDiscardedLines :: String -> String
-dropDiscardedLines = foldl discardAfterTwoNewlines ""
-  where discardAfterTwoNewlines str c =
-    if (c == '\n' && not(null str) && c == last str)
-      then ""
-      else str ++ [c]
+parseAsteroidsInput :: String -> (Asteroids, String, Bool)
+parseAsteroidsInput str =
+  let cutIndeces = elemIndices 'x' str
+      clear = length cutIndeces > 0
+      (_, goodStr) = splitAt (last $ 0:cutIndeces) str
+      (asteroids, remainder) = parseAsteroids goodStr
+  in  (asteroids, remainder, clear)
 
-availableLines :: String -> ([String], String)
-availableLines "" = ([],"")
-availableLines str = 
+parseAsteroids :: String -> (Asteroids, String)
+parseAsteroids "" = (noAsteroids, "")
+parseAsteroids str =
+  let (parsableLines, reminder) =
+        if last str == '\n'
+          then (lines str, "")
+          else (init $ lines str, last $ lines str)
+  in  (map parseAsteroid parsableLines, reminder)
+
+parseAsteroid :: String -> Asteroid
+parseAsteroid str =
+  case reads str :: [(Asteroid, String)] of
+    [] -> []
+    (asteroid, _):_ -> asteroid
+
