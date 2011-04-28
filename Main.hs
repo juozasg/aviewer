@@ -6,7 +6,7 @@ import Graphics.UI.GLUT
 import Engine.Bindings
 import Game.Data
 
-as1 = [[(0.01,0.01),(0.2,0.01),(0.2,0.2)],[(0.5,0.5),(0.8,0.5),(1.59,0.99),(0.99,0.99)]] :: Asteroids
+as1 = [(0.01,0.01),(0.2,0.01),(0.2,0.2)] :: Asteroid
 
 
 setLineSmooth :: IO ()
@@ -25,14 +25,18 @@ main = do
 
   setLineSmooth
 
-  asteroidsRef <- newIORef as1
+  basicAsteroid <- randomlyAddAsteroidToWorld as1
+  asteroidsRef <- newIORef [basicAsteroid]
   ioBufRef <- newIORef ""
 
   isFullScreenRef <- newIORef False
 
+  time <- get elapsedTime
+  lastTimeRef <- newIORef time
+
   keyboardMouseCallback $= Just (keyboardMouse isFullScreenRef)
   reshapeCallback $= Just reshape
-  idleCallback $= Just (idle asteroidsRef ioBufRef)
+  idleCallback $= Just (idle asteroidsRef ioBufRef lastTimeRef)
   displayCallback $= (display asteroidsRef)
 
   clearColor $= Color4 0.1 0.1 0.1 1.0

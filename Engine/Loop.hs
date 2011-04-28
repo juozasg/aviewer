@@ -12,12 +12,23 @@ display asteroidsRef = do
   swapBuffers
 
 
-idle asteroidsRef ioBufRef = do
-  updateAsteroids asteroidsRef ioBufRef
+idle asteroidsRef ioBufRef lastTimeRef = do
+  steps <- timeSinceLastFrame lastTimeRef
+  updateAsteroids asteroidsRef ioBufRef steps
+
+
   -- a <- get angle
   -- d <- get delta
   -- angle $=! (a + d)
   postRedisplay Nothing
+
+
+timeSinceLastFrame lastTimeRef = do
+  lastTime <- get lastTimeRef
+  currentTime <- get elapsedTime
+  lastTimeRef $= currentTime
+
+  return (currentTime - lastTime)
 
 
 

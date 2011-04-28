@@ -5,9 +5,9 @@ import Graphics.UI.GLUT
 
 import Game.Data
 
-renderAsteroid :: Asteroid -> IO ()
+renderAsteroid :: WorldAsteroid -> IO ()
 renderAsteroid asteroid = do
-  renderPrimitive LineLoop $ asteroidPrimitive asteroid
+  renderPrimitive LineLoop $ asteroidPrimitive $ worldAsteroidToScreen asteroid 
 
 
 asteroidPrimitive :: Asteroid -> IO ()
