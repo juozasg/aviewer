@@ -7,6 +7,7 @@ import Engine.Bindings
 import Game.Data
 
 as1 = [(0.01,0.01),(0.2,0.01),(0.2,0.2)] :: Asteroid
+as2 = [(0.01,0.01),(0.01,-0.01),(-0.01,-0.01),(-0.01,0.01)] :: Asteroid
 
 
 setLineSmooth :: IO ()
@@ -25,7 +26,7 @@ main = do
 
   setLineSmooth
 
-  basicAsteroid <- randomlyAddAsteroidToWorld as1
+  basicAsteroid <- randomlyAddAsteroidToWorld as2
   asteroidsRef <- newIORef [basicAsteroid]
   ioBufRef <- newIORef ""
 

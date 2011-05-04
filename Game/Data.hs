@@ -23,38 +23,43 @@ noWorldAsteroids = [] :: WorldAsteroids
 randomlyAddAsteroidToWorld :: Asteroid -> IO WorldAsteroid
 randomlyAddAsteroidToWorld a = do
   p <- randomPosition
-  -- v <- randomVelocity
-  v <- return (0.0001, 0.0001)
+  v <- randomVelocity
 
   putStrLn $ "Added: " ++ show (a,p,v)
   return (a, p, v)
 
 
 randomPosition :: IO Position
-randomPosition = (,) <$> randomRIO (0,1.6) <*> randomRIO (0,1)
+randomPosition = return (0.8,0.5)
+-- randomPosition = (,) <$> randomRIO (0,1.6) <*> randomRIO (0,1)
 
 randomVelocity :: IO Velocity
-randomVelocity = (,) <$> randomRIO (0,0.001) <*> randomRIO (0,0.001)
+randomVelocity = return (0.0008,0.00025)
+-- randomVelocity = (,) <$> randomRIO (0,0.001) <*> randomRIO (0,0.001)
 
 
 worldAsteroidToScreen :: WorldAsteroid -> Asteroid
 worldAsteroidToScreen (as, (px, py), _) = map (\(x,y) -> (x+px,y+py)) as
 
 stepWorldAsteroid ::Int -> WorldAsteroid -> WorldAsteroid
-stepWorldAsteroid steps (as, (px, py), v@(vx, vy)) = wrapAroundWorldAsteroid (as, (px + vx*s, py + vy*s), v)
+stepWorldAsteroid steps (as, (px, py), v@(vx, vy)) = wrapWorldAsteroid (as, (px + vx*s, py + vy*s), v)
   where s = fromIntegral steps
 
 
-wrapAroundWorldAsteroid wa@(as, (px,py),v) =
-  let as = worldAsteroidToScreen wa
-  in if allXOutside as
-        then (as, (px `wrap` worldWidth,py), v)
-        else if allYOutside as then (as, (px,py `wrap` worldHeight), v) else wa
-  -- if completelyOutsideWorld $ worldAsteroidToScreen wa
-  --   then (as, (px `wrap` worldWidth,py `wrap` worldHeight), v)
-  --   -- then (as, (0.6, 0.5), v)
-  --   else wa
+wrapWorldAsteroid :: WorldAsteroid -> WorldAsteroid
+wrapWorldAsteroid wa@(as, (px,py),v) =
+  let (dx,dy) = offsetBy minX maxX minY maxY
+  in  (as, (px+dx,py+dy),v)
   where
-    wrap p limit = if p < 0 then limit + p else p - limit
-    allXOutside as = and (map ((\x -> x < 0 || x > worldWidth) . fst) as)
-    allYOutside as = and (map ((\y -> y < 0 || y > worldHeight) . snd) as)
+    xs = map fst $ worldAsteroidToScreen wa
+    ys = map snd $ worldAsteroidToScreen wa
+    minX = minimum xs
+    maxX = maximum xs
+    minY = minimum ys
+    maxY = maximum ys
+    offsetBy minX maxX minY maxY
+      | minX > worldWidth   = (-maxX, 0)
+      | maxX < 0            = (worldWidth-minX,0)
+      | minY > worldHeight  = (0,-maxY)
+      | maxY < 0            = (0,worldHeight-minY)
+      | otherwise           = (0,0)
