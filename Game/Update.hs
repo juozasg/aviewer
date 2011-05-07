@@ -10,8 +10,8 @@ import Utils.IO
 import Game.Data
 import Data.List
 
-updateAsteroids asteroidsRef ioBufRef steps = do
-  previousContents <- get ioBufRef
+updateAsteroids asteroidsRef stdioBufRef steps = do
+  previousContents <- get stdioBufRef
   newContents <- nbGetContents
   let allContents = previousContents ++ newContents
   let (newAsteroids, remainingContent, clear) = parseAsteroidsInput allContents
@@ -21,7 +21,7 @@ updateAsteroids asteroidsRef ioBufRef steps = do
   newWorldAsteroids <- mapM randomlyAddAsteroidToWorld newAsteroids
 
   asteroidsRef $= map (stepWorldAsteroid steps) (previousWorldAsteroids ++ newWorldAsteroids)
-  ioBufRef $= remainingContent
+  stdioBufRef $= remainingContent
 
 parseAsteroidsInput :: String -> (Asteroids, String, Bool)
 parseAsteroidsInput str =

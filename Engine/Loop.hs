@@ -12,33 +12,14 @@ display asteroidsRef = do
   swapBuffers
 
 
-idle asteroidsRef ioBufRef lastTimeRef = do
-  steps <- timeSinceLastFrame lastTimeRef
-  updateAsteroids asteroidsRef ioBufRef steps
-
-
-  -- a <- get angle
-  -- d <- get delta
-  -- angle $=! (a + d)
-  postRedisplay Nothing
-
-
-timeSinceLastFrame lastTimeRef = do
-  lastTime <- get lastTimeRef
+idle asteroidsRef stdioBufRef esRef = do
+  EventState lastTime fs sp oldEvents <- get esRef
   currentTime <- get elapsedTime
-  lastTimeRef $= currentTime
+  esRef $= EventState currentTime fs sp oldEvents
 
-  return (currentTime - lastTime)
+  let steps = currentTime - lastTime
+  updateAsteroids asteroidsRef stdioBufRef steps
 
+  processEvents esRef
 
-
-  --
-  -- dots = [0,0.5,1,1.5,1.6] :: [GLfloat]
-  -- grid = [(x,y) | x <- dots, y <- dots]
-  --
-  -- simpleDisplayTest = do
-  --   renderPrimitive Points $ mapM_ renderDot grid
-  --
-  -- renderDot (x,y) = do
-  --   color $ (Color3 x y 1.0)
-  --   vertex $ (Vertex3 x y 0.0)
+  postRedisplay Nothing

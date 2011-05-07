@@ -1,14 +1,14 @@
 import Data.IORef
+import qualified Data.Map as Map
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
 import Engine.Bindings
-import Game.Data
+import Game.Data.All
 
 as1 = [(0.01,0.01),(0.2,0.01),(0.2,0.2)] :: Asteroid
 as2 = [(0.01,0.01),(0.01,-0.01),(-0.01,-0.01),(-0.01,0.01)] :: Asteroid
-
 
 setLineSmooth :: IO ()
 setLineSmooth = do
@@ -26,19 +26,20 @@ main = do
 
   setLineSmooth
 
-  basicAsteroid <- randomlyAddAsteroidToWorld as2
-  asteroidsRef <- newIORef [basicAsteroid]
-  ioBufRef <- newIORef ""
+  -- basicAsteroid <- randomlyAddAsteroidToWorld as2
+  -- asteroidsRef <- newIORef [basicAsteroid]
 
-  isFullScreenRef <- newIORef False
+  currentTime <- get elapsedTime
 
-  time <- get elapsedTime
-  lastTimeRef <- newIORef time
+  asteroidsRef <- newIORef noWorldAsteroids
+  stdioBufRef <- newIORef ""
+  esRef <- newIORef $ blankEventState currentTime
 
-  keyboardMouseCallback $= Just (keyboardMouse isFullScreenRef)
+
+  keyboardMouseCallback $= Just (keyboardMouse esRef)
   reshapeCallback $= Just reshape
-  idleCallback $= Just (idle asteroidsRef ioBufRef lastTimeRef)
-  displayCallback $= (display asteroidsRef)
+  idleCallback $= Just (idle asteroidsRef stdioBufRef esRef)
+  displayCallback $= Just (display asteroidsRef)
 
   clearColor $= Color4 0.1 0.1 0.1 1.0
   mainLoop

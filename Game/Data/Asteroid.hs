@@ -1,14 +1,9 @@
-module Game.Data where
+module Game.Data.Asteroid where
 
 import System.Random
 import Control.Applicative
-import Data.Fixed
 
-worldHeight = 1.0 :: Float
-worldWidth = 1.6 :: Float
-
-type Position = (Float, Float)
-type Velocity = (Float, Float)
+import Game.Data.All
 
 type Asteroid = [Position]
 type Asteroids = [Asteroid]
@@ -30,12 +25,12 @@ randomlyAddAsteroidToWorld a = do
 
 
 randomPosition :: IO Position
-randomPosition = return (0.8,0.5)
--- randomPosition = (,) <$> randomRIO (0,1.6) <*> randomRIO (0,1)
+-- randomPosition = return (0.8,0.5)
+randomPosition = (,) <$> randomRIO (0,1.6) <*> randomRIO (0,1)
 
 randomVelocity :: IO Velocity
-randomVelocity = return (0.0008,0.00025)
--- randomVelocity = (,) <$> randomRIO (0,0.001) <*> randomRIO (0,0.001)
+-- randomVelocity = return (0.00025,-0.0005)
+randomVelocity = (,) <$> randomRIO (0,0.001) <*> randomRIO (0,0.001)
 
 
 worldAsteroidToScreen :: WorldAsteroid -> Asteroid
@@ -57,6 +52,9 @@ wrapWorldAsteroid wa@(as, (px,py),v) =
     maxX = maximum xs
     minY = minimum ys
     maxY = maximum ys
+    centerX = px
+    centerY = py
+    invertXDisplacement = (worldXCenter-centerX) * 2
     offsetBy minX maxX minY maxY
       | minX > worldWidth   = (-maxX, 0)
       | maxX < 0            = (worldWidth-minX,0)
