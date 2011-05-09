@@ -3,7 +3,7 @@ module Game.Render (renderAsteroid) where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
-import Game.Data
+import Game.Data.Asteroid
 
 renderAsteroid :: WorldAsteroid -> IO ()
 renderAsteroid asteroid = do

@@ -5,7 +5,8 @@ import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
 import Engine.Bindings
-import Game.Data.All
+import Game.Data.Asteroid
+import Game.Data.EventState
 
 as1 = [(0.01,0.01),(0.2,0.01),(0.2,0.2)] :: Asteroid
 as2 = [(0.01,0.01),(0.01,-0.01),(-0.01,-0.01),(-0.01,0.01)] :: Asteroid
@@ -39,7 +40,7 @@ main = do
   keyboardMouseCallback $= Just (keyboardMouse esRef)
   reshapeCallback $= Just reshape
   idleCallback $= Just (idle asteroidsRef stdioBufRef esRef)
-  displayCallback $= Just (display asteroidsRef)
+  displayCallback $= (display asteroidsRef)
 
   clearColor $= Color4 0.1 0.1 0.1 1.0
   mainLoop

@@ -3,7 +3,12 @@ module Game.Data.Asteroid where
 import System.Random
 import Control.Applicative
 
+import Data.List
+
 import Game.Data.All
+
+import Utils.IO
+
 
 type Asteroid = [Position]
 type Asteroids = [Asteroid]
@@ -61,3 +66,33 @@ wrapWorldAsteroid wa@(as, (px,py),v) =
       | minY > worldHeight  = (0,-maxY)
       | maxY < 0            = (0,worldHeight-minY)
       | otherwise           = (0,0)
+
+
+
+
+
+---- parsing -------
+
+parseAsteroidsInput :: String -> (Asteroids, String, Bool)
+parseAsteroidsInput str =
+  let cutIndeces = elemIndices 'x' str
+      clear = length cutIndeces > 0
+      (_, goodStr) = splitAt (last $ 0:cutIndeces) str
+      (asteroids, remainder) = parseAsteroids goodStr
+  in  (asteroids, remainder, clear)
+
+parseAsteroids :: String -> (Asteroids, String)
+parseAsteroids "" = (noAsteroids, "")
+parseAsteroids str =
+  let (parsableLines, reminder) =
+        if last str == '\n'
+          then (lines str, "")
+          else (init $ lines str, last $ lines str)
+  in  (map parseAsteroid parsableLines, reminder)
+
+parseAsteroid :: String -> Asteroid
+parseAsteroid str =
+  case reads str :: [(Asteroid, String)] of
+    [] -> []
+    (asteroid, _):_ -> asteroid
+

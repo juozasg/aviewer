@@ -1,7 +1,5 @@
 module Game.Data.All where
 
-import Game.Data.Asteroid
-import Game.Data.EventState
 
 type Position = (Float, Float)
 type Velocity = (Float, Float)

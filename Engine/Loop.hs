@@ -4,6 +4,7 @@ import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
 import Game.Core
+import Game.Data.EventState
 
 display asteroidsRef = do
   clear [ColorBuffer]

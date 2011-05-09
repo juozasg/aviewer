@@ -1,9 +1,10 @@
 module Game.Data.EventState where
 
-import Engine.Controls
-import Game.Data.All
+import Engine.Data
+import Graphics.UI.GLUT
 
-data EventsState = EventsState {
+
+data EventState = EventState {
   lastTickTime :: Int,
   isFullScreen :: Bool,
   spawnPoint :: Maybe Position,
@@ -11,22 +12,3 @@ data EventsState = EventsState {
 }
 
 blankEventState time = EventState {isFullScreen = False, spawnPoint = Nothing, availableEvents = [], lastTickTime = time}
-
--- esRefGet esRef field = do
---   es <- get esRef
---   return (esGet field)
--- 
--- esRefSet esRef field val = do
---   es <- get esRef
---   esRef $= (esSet es field val)
---   return ()
--- 
--- esRefApply esRef field func = do
---   es <- get esRef
---   esRef $= (esApply es field val)
---   return ()
--- 
--- 
--- esGet es field
--- esSet es field val
--- esApply es field func
