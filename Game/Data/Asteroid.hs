@@ -5,9 +5,17 @@ import Control.Applicative
 
 import Data.List
 
-import Game.Data.All
-
 import Utils.IO
+
+
+type Position = (Float, Float)
+type Velocity = (Float, Float)
+
+worldHeight = 1.0 :: Float
+worldWidth = 1.6 :: Float
+
+worldYCenter = worldHeight / 2
+worldXCenter = worldWidth / 2
 
 
 type Asteroid = [Position]

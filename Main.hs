@@ -27,12 +27,12 @@ main = do
 
   setLineSmooth
 
-  -- basicAsteroid <- randomlyAddAsteroidToWorld as2
-  -- asteroidsRef <- newIORef [basicAsteroid]
+  basicAsteroid <- randomlyAddAsteroidToWorld as2
+  asteroidsRef <- newIORef [basicAsteroid]
 
   currentTime <- get elapsedTime
 
-  asteroidsRef <- newIORef noWorldAsteroids
+  -- asteroidsRef <- newIORef noWorldAsteroids
   stdioBufRef <- newIORef ""
   esRef <- newIORef $ blankEventState currentTime
 
