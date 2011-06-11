@@ -7,6 +7,7 @@ import Graphics.UI.GLUT
 import Engine.Bindings
 import Game.Data.Asteroid
 import Game.Data.EventState
+import Game.Data.BigState
 
 as1 = [(0.01,0.01),(0.2,0.01),(0.2,0.2)] :: Asteroid
 as2 = [(0.01,0.01),(0.01,-0.01),(-0.01,-0.01),(-0.01,0.01)] :: Asteroid
@@ -28,19 +29,20 @@ main = do
   setLineSmooth
 
   basicAsteroid <- randomlyAddAsteroidToWorld as2
-  asteroidsRef <- newIORef [basicAsteroid]
+  -- asteroidsRef <- newIORef [basicAsteroid]
 
   currentTime <- get elapsedTime
 
   -- asteroidsRef <- newIORef noWorldAsteroids
   stdioBufRef <- newIORef ""
-  esRef <- newIORef $ blankEventState currentTime
+  -- esRef <- newIORef $ blankEventState currentTime
 
+  bigStateRef <- newIORef $ BigState (blankEventState currentTime) [basicAsteroid] stdioBufRef
 
-  keyboardMouseCallback $= Just (keyboardMouse esRef)
+  keyboardMouseCallback $= Just (keyboardMouse bigStateRef)
   reshapeCallback $= Just reshape
-  idleCallback $= Just (idle asteroidsRef stdioBufRef esRef)
-  displayCallback $= (display asteroidsRef)
+  idleCallback $= Just (idle bigStateRef)
+  displayCallback $= (display bigStateRef)
 
   clearColor $= Color4 0.1 0.1 0.1 1.0
   mainLoop

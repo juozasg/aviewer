@@ -1,21 +1,15 @@
-module Game.Core (registerEvent,processEvents,displayAsteroids,updateAsteroids) where
+module Game.Core (registerEvent,processEvents,displayAsteroids,updateAsteroidsFromIO) where
 
 import Data.IORef
 
 import Graphics.UI.GLUT
 
 import Game.Data.EventState
+import Game.Data.BigState
 import Game.Render
 import Game.Update
 
-displayAsteroids roidsRef = get roidsRef >>= mapM_ renderAsteroid
+displayAsteroids roids = mapM_ renderAsteroid roids
 
-registerEvent esRef event = do
-  EventState tt fs sp oldEvents <- get esRef
-  esRef $= EventState tt fs sp (event:oldEvents)
-
-processEvents esRef = do
-  startingEs <- get esRef
-  finalEs <- runEventState startingEs
-  esRef $= finalEs
-
+registerEvent bsRef event = bsRef $~ (modifyBSEventState (appendEvent event))
+  where appendEvent e (EventState tt fs sp oldEvents) = EventState tt fs sp (e:oldEvents)

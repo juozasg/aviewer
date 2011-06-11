@@ -1,6 +1,7 @@
-module Game.Update (updateAsteroids, runEventState) where
+module Game.Update (updateAsteroidsFromIO, processEvents) where
 
 import Data.List
+import Data.IORef
 
 import System.IO
 import Control.Monad
@@ -8,32 +9,31 @@ import Control.Monad
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
+import Game.Data.BigState
 import Game.Data.EventState
 import Game.Data.Asteroid
+
 import Game.Events.Dispatch
 
 import Utils.IO
 
-updateAsteroids asteroidsRef stdioBufRef steps = do
+updateAsteroidsFromIO :: WorldAsteroids -> (IORef String) -> Int -> IO WorldAsteroids
+updateAsteroidsFromIO wAsteroids stdioBufRef steps = do
   previousContents <- get stdioBufRef
   newContents <- nbGetContents
   let allContents = previousContents ++ newContents
   let (newAsteroids, remainingContent, clear) = parseAsteroidsInput allContents
-
-  previousWorldAsteroids <- if clear then return noWorldAsteroids else get asteroidsRef
-
-  newWorldAsteroids <- mapM randomlyAddAsteroidToWorld newAsteroids
-
-  asteroidsRef $= map (stepWorldAsteroid steps) (previousWorldAsteroids ++ newWorldAsteroids)
   stdioBufRef $= remainingContent
 
+  let previousWorldAsteroids = if clear then noWorldAsteroids else wAsteroids
+  newWorldAsteroids <- mapM randomlyAddAsteroidToWorld newAsteroids
 
-runEventState :: EventState -> IO EventState
-runEventState state@(EventState _ _ _ []) = return state
-runEventState state = stepEventState state >>= runEventState
+  return $ map (stepWorldAsteroid steps) (previousWorldAsteroids ++ newWorldAsteroids)
 
-stepEventState :: EventState -> IO EventState
-stepEventState state@(EventState tt fs sp (event:events)) = do
-  let (key, keyState, _, _) = event
-  eventDispatchReaction state key keyState
-  return $ eventDispatchNewState state key keyState
+
+processEvents :: Int -> BigState -> IO BigState
+processEvents steps bigState = 
+  if hasEventsToDispatch bigState
+    then (eventDispatch steps bigState) >>= (processEvents steps)
+    else return bigState
+  

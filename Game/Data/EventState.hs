@@ -5,10 +5,12 @@ import Graphics.UI.GLUT
 
 
 data EventState = EventState {
-  lastTickTime :: Int,
-  isFullScreen :: Bool,
-  spawnPoint :: Maybe Position,
-  availableEvents :: [InputEvent]
+  esLastTickTime :: Int,
+  esIsFullScreen :: Bool,
+  esSpawnPoint :: Maybe Position,
+  esAvailableEvents :: [InputEvent]
 }
 
-blankEventState time = EventState {isFullScreen = False, spawnPoint = Nothing, availableEvents = [], lastTickTime = time}
+blankEventState time = EventState time False Nothing []
+
+esSetFullScreen bool es = es {esIsFullScreen=bool} 
