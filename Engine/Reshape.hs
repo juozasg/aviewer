@@ -3,6 +3,8 @@ module Engine.Reshape (reshape) where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
+import Game.Data.BigState(bsScreenSize)
+
 fixedRatio = 1.6 :: Float
 
 keepRatio :: (Integral a) => (a,a) -> (a,a)
@@ -14,10 +16,16 @@ keepRatio (w,h)
 keepSizeRatio :: Size -> Size
 keepSizeRatio (Size w h) = uncurry Size $ keepRatio (w,h)
 
-reshape s@(Size w h) = do
-  viewport $=(Position 0 0, keepSizeRatio s)
+reshape bsRef s@(Size w h) = do
+  let Size viewX viewY = keepSizeRatio s
+
+  bigState <- get bsRef
+  bsRef $= bigState {bsScreenSize = (fromIntegral viewX, fromIntegral viewY)}
+
+  viewport $=(Position 0 0,Size viewX viewY)
   setProjectionMatrix
   postRedisplay Nothing
+    -- where updateBSScreenSize (x,y) bs = bs {bsScreenSize = (x,y)}
 
 
 setProjectionMatrix = do

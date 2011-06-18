@@ -20,11 +20,13 @@ setLineSmooth = do
   hint LineSmooth $= Nicest
 
 main = do
+  let screenX = 480
+      screenY = 300
   (progname, _) <- getArgsAndInitialize
 
   initialDisplayMode $= [DoubleBuffered]
   createWindow "Hello World"
-  windowSize $= Size 480 300
+  windowSize $= Size screenX screenY
 
   setLineSmooth
 
@@ -37,10 +39,10 @@ main = do
   stdioBufRef <- newIORef ""
   -- esRef <- newIORef $ blankEventState currentTime
 
-  bigStateRef <- newIORef $ BigState (blankEventState currentTime) [basicAsteroid] stdioBufRef
+  bigStateRef <- newIORef $ BigState (blankEventState currentTime) [] stdioBufRef (fromIntegral screenX, fromIntegral screenY)
 
   keyboardMouseCallback $= Just (keyboardMouse bigStateRef)
-  reshapeCallback $= Just reshape
+  reshapeCallback $= Just (reshape bigStateRef)
   idleCallback $= Just (idle bigStateRef)
   displayCallback $= (display bigStateRef)
 

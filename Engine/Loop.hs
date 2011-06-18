@@ -18,7 +18,7 @@ display bsRef = do
 
 idle bsRef = do
   currentTime <- get elapsedTime
-  BigState eState wAsteroids stdioBufRef <- get bsRef
+  BigState eState wAsteroids stdioBufRef screen <- get bsRef
 
   let lastTime = esLastTickTime eState
   let steps = currentTime - lastTime
@@ -26,9 +26,9 @@ idle bsRef = do
 
   updatedWorldAsteroids <- updateAsteroidsFromIO wAsteroids stdioBufRef steps
 
-  BigState newEState updatedWorldAsteroids' _ <- processEvents steps (BigState eState updatedWorldAsteroids stdioBufRef)
+  BigState newEState updatedWorldAsteroids' _ _ <- processEvents steps (BigState eState updatedWorldAsteroids stdioBufRef screen)
 
   let eState' = newEState {esLastTickTime=currentTime}
-  bsRef $= BigState eState' updatedWorldAsteroids' stdioBufRef
+  bsRef $= BigState eState' updatedWorldAsteroids' stdioBufRef screen
 
   postRedisplay Nothing

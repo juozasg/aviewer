@@ -11,5 +11,6 @@ import Game.Update
 
 displayAsteroids roids = mapM_ renderAsteroid roids
 
-registerEvent bsRef event = bsRef $~ (modifyBSEventState (appendEvent event))
+registerEvent bsRef event = bsRef $~ (bsModifyEventState (appendEvent event))
   where appendEvent e (EventState tt fs sp oldEvents) = EventState tt fs sp (e:oldEvents)
+

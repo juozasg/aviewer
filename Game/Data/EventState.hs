@@ -7,7 +7,7 @@ import Graphics.UI.GLUT
 data EventState = EventState {
   esLastTickTime :: Int,
   esIsFullScreen :: Bool,
-  esSpawnPoint :: Maybe Position,
+  esSpawnPoint :: Maybe (Float,Float),
   esAvailableEvents :: [InputEvent]
 }
 

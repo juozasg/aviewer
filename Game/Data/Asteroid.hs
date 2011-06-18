@@ -28,6 +28,9 @@ type WorldAsteroids = [WorldAsteroid]
 noWorldAsteroids = [] :: WorldAsteroids
 
 
+-- screenToWorld :: Int -> GLInt -> Float
+-- screenToWorld x = 
+
 randomlyAddAsteroidToWorld :: Asteroid -> IO WorldAsteroid
 randomlyAddAsteroidToWorld a = do
   p <- randomPosition

@@ -13,14 +13,19 @@ import Game.Data.EventState
 data BigState = BigState {
   bsEventState :: EventState,
   bsWAsteroids :: WorldAsteroids,
-  bsStdioBufRef :: IORef String
+  bsStdioBufRef :: IORef String,
+  bsScreenSize :: (Int, Int)
 }
 
-modifyBSEventState :: (EventState -> EventState) -> BigState -> BigState
-modifyBSEventState f bs = bs {bsEventState = f $ bsEventState bs}
+bsModifyEventState :: (EventState -> EventState) -> BigState -> BigState
+bsModifyEventState f bs = bs {bsEventState = f $ bsEventState bs}
+
+bsModifyWAsteroids :: (WorldAsteroids -> WorldAsteroids) -> BigState -> BigState
+bsModifyWAsteroids f bs = bs {bsWAsteroids = f $ bsWAsteroids bs}
 
 bsExtractInputEvent :: BigState -> InputEvent
 bsExtractInputEvent bs = head $ esAvailableEvents $ bsEventState bs
 
 bsWithoutFirstInputEvent :: BigState -> BigState
-bsWithoutFirstInputEvent bs = modifyBSEventState (\es -> es {esAvailableEvents = (tail $ esAvailableEvents es)}) bs
+bsWithoutFirstInputEvent bs = bsModifyEventState (\es -> es {esAvailableEvents = (tail $ esAvailableEvents es)}) bs
+

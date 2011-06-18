@@ -20,3 +20,5 @@ toggleFullScreen fs = do
   currentFS <- get fs
   setFullScreen currentFS
   fs $= (not currentFS)
+
+
