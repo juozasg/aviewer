@@ -12,9 +12,10 @@ import Game.Data.EventState
 display bsRef = do
   clear [ColorBuffer]
   loadIdentity
-  get bsRef >>= displayAsteroids . bsWAsteroids
+  bs <- get bsRef
+  displayAsteroids $ bsWAsteroids bs
+  displayUIElements bs
   swapBuffers
-
 
 idle bsRef = do
   currentTime <- get elapsedTime

@@ -1,4 +1,4 @@
-module Game.Core (registerEvent,processEvents,displayAsteroids,updateAsteroidsFromIO) where
+module Game.Core (registerEvent,registerMousePosition,processEvents,displayAsteroids,displayUIElements,updateAsteroidsFromIO) where
 
 import Data.IORef
 
@@ -11,6 +11,14 @@ import Game.Update
 
 displayAsteroids roids = mapM_ renderAsteroid roids
 
-registerEvent bsRef event = bsRef $~ (bsModifyEventState (appendEvent event))
-  where appendEvent e (EventState tt fs sp oldEvents) = EventState tt fs sp (e:oldEvents)
+displayUIElements bigState = do
+  let es = bsEventState bigState
+      mousePos = esMousePosition es
+  maybe (return ()) (drawTrajectory mousePos) (esSpawnPoint es)
+  
+drawTrajectory mousePos originPos = renderLine originPos mousePos
+  
 
+registerEvent bsRef event = bsRef $~ (bsModifyEventState (esModifyAvailableEvents (event:)))
+
+registerMousePosition bsRef (x,y) = bsRef $~ (bsModifyEventState (\es -> es {esMousePosition = (x,y)}))

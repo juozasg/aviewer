@@ -25,7 +25,6 @@ reshape bsRef s@(Size w h) = do
   viewport $=(Position 0 0,Size viewX viewY)
   setProjectionMatrix
   postRedisplay Nothing
-    -- where updateBSScreenSize (x,y) bs = bs {bsScreenSize = (x,y)}
 
 
 setProjectionMatrix = do

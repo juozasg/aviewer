@@ -8,7 +8,9 @@ import Engine.Controls
 import Game.Data.BigState
 import Game.Data.EventState
 
+import Game.Events.System
 import Game.Events.Gameplay
+
 
 hasEventsToDispatch :: BigState -> Bool
 hasEventsToDispatch bigState = esAvailableEvents (bsEventState bigState) /= []
@@ -34,19 +36,6 @@ eventDispatch steps bigState = do
     (_, MouseButton RightButton, Down)    -> dispatchSpawnClear newBigState
 
     _ -> return newBigState
-
-
-dispatchToggleFullScreen :: Bool -> BigState -> IO BigState
-dispatchToggleFullScreen isFS bigState = do
-  setFullScreen isFS
-  return $ bsModifyEventState (esSetFullScreen isFS) bigState
-
-dispatchDeath :: BigState -> IO BigState
-dispatchDeath bs = die
-
-
-
-
 
 
 

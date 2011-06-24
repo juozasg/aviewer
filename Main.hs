@@ -42,6 +42,9 @@ main = do
   bigStateRef <- newIORef $ BigState (blankEventState currentTime) [] stdioBufRef (fromIntegral screenX, fromIntegral screenY)
 
   keyboardMouseCallback $= Just (keyboardMouse bigStateRef)
+  passiveMotionCallback $= Just (mouseMotion bigStateRef)
+  motionCallback $= Just (mouseMotion bigStateRef)
+
   reshapeCallback $= Just (reshape bigStateRef)
   idleCallback $= Just (idle bigStateRef)
   displayCallback $= (display bigStateRef)

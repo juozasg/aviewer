@@ -1,4 +1,4 @@
-module Engine.Bindings (idle,display,reshape,keyboardMouse) where
+module Engine.Bindings (idle,display,reshape,keyboardMouse,mouseMotion) where
 
 import Engine.Input
 import Engine.Reshape
