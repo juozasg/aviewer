@@ -17,4 +17,4 @@ blankEventState time = EventState time False Nothing (0,0) []
 esSetFullScreen bool es = es {esIsFullScreen=bool}
 
 esModifyAvailableEvents :: ([InputEvent] -> [InputEvent]) -> EventState -> EventState
-esModifyAvailableEvents f es = es {esAvailableEvents = f $ esAvailableEvents es} 
+esModifyAvailableEvents f es = es {esAvailableEvents = f $ esAvailableEvents es}

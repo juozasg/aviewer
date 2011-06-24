@@ -15,9 +15,9 @@ displayUIElements bigState = do
   let es = bsEventState bigState
       mousePos = esMousePosition es
   maybe (return ()) (drawTrajectory mousePos) (esSpawnPoint es)
-  
+
 drawTrajectory mousePos originPos = renderLine originPos mousePos
-  
+
 
 registerEvent bsRef event = bsRef $~ (bsModifyEventState (esModifyAvailableEvents (event:)))
 
