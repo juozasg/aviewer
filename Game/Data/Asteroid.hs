@@ -58,9 +58,9 @@ stepWorldAsteroid steps (as, (px, py), v@(vx, vy)) = wrapWorldAsteroid (as, (px 
 
 
 wrapWorldAsteroid :: WorldAsteroid -> WorldAsteroid
-wrapWorldAsteroid wa@(as, (px,py),v) =
+wrapWorldAsteroid wa@(as, (px,py),(vx,vy)) =
   let (dx,dy) = offsetBy minX maxX minY maxY
-  in  (as, (px+dx,py+dy),v)
+  in  (as, (nx,ny),(vx,vy))
   where
     xs = map fst $ worldAsteroidToScreen wa
     ys = map snd $ worldAsteroidToScreen wa
@@ -68,16 +68,17 @@ wrapWorldAsteroid wa@(as, (px,py),v) =
     maxX = maximum xs
     minY = minimum ys
     maxY = maximum ys
-    centerX = px
-    centerY = py
-    invertXDisplacement = (worldXCenter-centerX) * 2
-    offsetBy minX maxX minY maxY
-      | minX > worldWidth   = (-maxX, 0)
-      | maxX < 0            = (worldWidth-minX,0)
-      | minY > worldHeight  = (0,-maxY)
-      | maxY < 0            = (0,worldHeight-minY)
-      | otherwise           = (0,0)
-
+    wrap = maxX < 0 || maxY < 0 || minX > worldWidth || minY > worldHeight
+    -- just invert the velocity and find it's intersection with the edge of the world.
+    -- 
+    -- invertXDisplacement = (worldXCenter-centerX) * 2
+    -- offsetBy minX maxX minY maxY
+    --   | minX > worldWidth   = (-maxX, 0)
+    --   | maxX < 0            = (worldWidth-minX,0)
+    --   | minY > worldHeight  = (0,-maxY)
+    --   | maxY < 0            = (0,worldHeight-minY)
+    --   | otherwise           = (0,0)
+    -- 
 
 
 
