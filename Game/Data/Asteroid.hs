@@ -56,19 +56,40 @@ stepWorldAsteroid ::Int -> WorldAsteroid -> WorldAsteroid
 stepWorldAsteroid steps (as, (px, py), v@(vx, vy)) = wrapWorldAsteroid (as, (px + vx*s, py + vy*s), v)
   where s = fromIntegral steps
 
+data WrapType = WLeft | WRight | WTop | WBottom | NoWrap deriving (Eq)
 
 wrapWorldAsteroid :: WorldAsteroid -> WorldAsteroid
-wrapWorldAsteroid wa@(as, (px,py),(vx,vy)) =
-  let (dx,dy) = offsetBy minX maxX minY maxY
-  in  (as, (nx,ny),(vx,vy))
+wrapWorldAsteroid wa@(as, (px,py),(vx,vy)) = (as, (nx,ny),(vx,vy))
   where
     xs = map fst $ worldAsteroidToScreen wa
     ys = map snd $ worldAsteroidToScreen wa
-    minX = minimum xs
-    maxX = maximum xs
-    minY = minimum ys
-    maxY = maximum ys
-    wrap = maxX < 0 || maxY < 0 || minX > worldWidth || minY > worldHeight
+
+    (wrapType,xoffset,yoffset) = wrapParams (minimum xs) (minimum ys) (maximum xs) (maximum ys) worldWidth worldHeight
+    wrapParams minX minY maxX maxY worldWidth worldHeight
+         | maxX < 0            = (WLeft,maxX-px,0)
+         | maxY < 0            = (WBottom,0,maxY-px) 
+         | minX > worldWidth   = (WRight,px-minX,0)
+         | minY > worldHeight  = (WTop,0,py-minY)
+         | otherwise = (NoWrap,0,0)
+    (nx, ny) = if wrapType /= NoWrap
+                then wrapBoundary wrapType (px,py) (-vx,-vy) (0,0,worldHeight,worldWidth)
+                else (px,py)
+
+wrapBoundary wrapType (x,y) (vx,vy) bound@(bottom,left,top,right) =
+  let dvy = y/vy
+      dvx = x/vx
+      intersections = [
+        (WLeft, (left, y-dvx*vy)),
+        (WRight, (right, y-dvx*vy)),
+        (WTop, (x-dvy*vx, top)),
+        (WBottom, (x-dvy*vx, bottom)),
+        (NoWrap, (x,y))]
+  in snd $ head $ filter (\(wt,(nx,ny)) -> wt == NoWrap || (wrapType /= wt && inBounday (nx,ny) bound)) intersections
+    where inBounday (x,y) (bottom,left,top,right) = x >= left && x <= right && y >= bottom && y <= top
+    
+        
+  -- where validIntersection (kind,(x,y)) = (x == 0 or y == 0) and ()
+  
     -- just invert the velocity and find it's intersection with the edge of the world.
     -- 
     -- invertXDisplacement = (worldXCenter-centerX) * 2
